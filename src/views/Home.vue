@@ -1,18 +1,31 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Favorites>
+      <AddFavorites/>
+    </Favorites>
+    <AddFavoritesModal/>
+   
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Favorites from '@/components/Favorites.vue'
+import AddFavorites from '@/components/AddFavorites.vue'
+import AddFavoritesModal from '@/components/AddFavoritesModal.vue'
+
+
+
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
-  }
+    Favorites,
+    AddFavorites,
+    AddFavoritesModal
+    
+  },
+ 
+  
 }
 </script>

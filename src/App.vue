@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <WebGazer @update="onUpdate" :off="false" />
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -7,9 +8,34 @@
     <router-view/>
   </div>
 </template>
+<script>
+import WebGazer from "@/components/WebGazer.vue";
+//import Keyboard
+
+export default{
+  name: "App",
+  components: {WebGazer},
+  data() {
+    return {
+      x: 0,
+      y: 0,
+      
+    };
+  },
+  methods: {
+    onUpdate(coord) {
+      this.x = coord.x;
+      this.y = coord.y;
+      console.log('This is X-Value:',this.x);
+      console.log('This is Y-Value:',this.y);
+    },
+    
+  },
+};
+</script>
 
 <style>
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,5 +54,5 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>
