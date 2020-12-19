@@ -1,35 +1,45 @@
 <template>
   <div id="app">
-    <WebGazer @update="onUpdate" :off="false" />
+    <!-- <WebGazer @update="onUpdate" :off="false" /> -->
+    <Favorites @update="onUpdate" :off="false" />
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 <script>
-import WebGazer from "@/components/WebGazer.vue";
+//import WebGazer from "@/components/WebGazer.vue";
 //import Keyboard
+import Favorites from "@/components/Favorites.vue";
 
-export default{
+export default {
   name: "App",
-  components: {WebGazer},
-  data() {
-    return {
-      x: 0,
-      y: 0,
-      
-    };
+  // components: {WebGazer},
+  components: { Favorites },
+  data: () => ({
+    windowHeight: 0,
+    windowWidth: 0,
+    currentX: 0,
+    currentY: 0,
+  }),
+
+  created: function() {
+    this.windowHeight = window.innerHeight;
+    this.windowWidth = window.innerWidth;
+    window.addEventListener("mousemove", this.move);
+  },
+  destroyed: function() {
+    window.removeEventListener("mousemove", this.move);
   },
   methods: {
-    onUpdate(coord) {
-      this.x = coord.x;
-      this.y = coord.y;
-      console.log('This is X-Value:',this.x);
-      console.log('This is Y-Value:',this.y);
+    onUpdate(event) {
+      this.currentX = event.clientX;
+      this.currentY = event.clientY;
+      console.log("This is X-Value:", event.clientX);
+      console.log("This is Y-Value:", event.clientY);
     },
-    
   },
 };
 </script>
