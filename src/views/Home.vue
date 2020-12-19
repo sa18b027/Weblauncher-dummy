@@ -1,31 +1,24 @@
 <template>
   <div class="home">
     <Favorites>
-      <AddFavorites/>
+      <AddFavorites />
     </Favorites>
-    <AddFavoritesModal/>
-   
+    <AddFavoritesModal />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Favorites from '@/components/Favorites.vue'
-import AddFavorites from '@/components/AddFavorites.vue'
-import AddFavoritesModal from '@/components/AddFavoritesModal.vue'
-
-
-
+import Favorites from "@/components/Favorites.vue";
+import AddFavorites from "@/components/AddFavorites.vue";
+import AddFavoritesModal from "@/components/AddFavoritesModal.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
     Favorites,
     AddFavorites,
-    AddFavoritesModal
-    
+    AddFavoritesModal,
   },
- 
-  
-}
+};
 </script>

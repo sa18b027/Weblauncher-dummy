@@ -1,7 +1,12 @@
 <template>
   <div id="app">
     <!-- <WebGazer @update="onUpdate" :off="false" /> -->
-    <Favorites @update="onUpdate" :off="false" />
+    <!-- <Favorites
+      @update="onUpdate"
+      :off="false"
+      v-bind:currentX="currentX"
+      v-bind:currentY="currentY"
+    /> -->
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -12,12 +17,14 @@
 <script>
 //import WebGazer from "@/components/WebGazer.vue";
 //import Keyboard
-import Favorites from "@/components/Favorites.vue";
+// import Favorites from "@/components/Favorites.vue";
+
+import { mapMutations } from "vuex";
 
 export default {
   name: "App",
   // components: {WebGazer},
-  components: { Favorites },
+  // components: { Favorites },
   data: () => ({
     windowHeight: 0,
     windowWidth: 0,
@@ -28,17 +35,20 @@ export default {
   created: function() {
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
-    window.addEventListener("mousemove", this.move);
+    window.addEventListener("mousemove", this.onUpdate);
   },
   destroyed: function() {
-    window.removeEventListener("mousemove", this.move);
+    window.removeEventListener("mousemove", this.onUpdate);
   },
   methods: {
+    ...mapMutations(["setCurrentCoor"]),
     onUpdate(event) {
       this.currentX = event.clientX;
       this.currentY = event.clientY;
-      console.log("This is X-Value:", event.clientX);
-      console.log("This is Y-Value:", event.clientY);
+      this.setCurrentCoor({
+        x: this.currentX,
+        y: this.currentY,
+      });
     },
   },
 };
