@@ -21,6 +21,9 @@ export default new Vuex.Store({
         url: "https://www.gmail.com",
       },
     ],
+    middle: {
+      middle: null,
+    },
     showAddFavoritesModal: false,
   },
   mutations: {
@@ -64,6 +67,10 @@ export default new Vuex.Store({
         localStorage.setItem("favorit", JSON.stringify(state.favorites));
       }
     },
+    coordinates_area: function(state, middle) {
+      state.middle = middle;
+      localStorage.setItem("middle", JSON.stringify(middle));
+    },
   },
   getters: {
     favorites(state) {
@@ -74,6 +81,9 @@ export default new Vuex.Store({
       }
       console.log(state.favorites);
       return state.favorites;
+    },
+    getCurrentCoor(state) {
+      return state.current;
     },
   },
   actions: {},

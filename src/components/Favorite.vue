@@ -1,7 +1,8 @@
 <template>
   <li class="favorite-element" ref="elem">
-    <div>
-      <a :href="fav.url">{{ fav.name }}</a>
+    <div v-bind:class="[highlighted ? 'highlighted' : '']">
+      <a :href="fav.url">{{ fav.name }}<br />{{ fav.id }}</a>
+      <div>{{ highlighted }}</div>
       <button @click="onClickRemove(fav.id)">Löschen</button>
     </div>
   </li>
@@ -15,19 +16,22 @@ export default {
       type: Object,
       required: true,
     },
+    highlighted: Boolean,
   },
   data() {
     return {
-      xMin: 0,
-      xMax: 0,
-      yMin: 0,
-      yMax: 0,
+      xMin: 0, //getBoundingClientRect.left
+      xMax: 0, //.right
+      yMin: 0, //.top
+      yMax: 0, //.bottom
     };
   },
   methods: {
     updateBoundingBox() {
-      const rect = this.$refs.elem.getBoundingClientRect();
-      console.log(rect);
+      //const rect = this.$refs.elem.getBoundingClientRect();
+      /* console.log(rect);
+      console.log("favorite");
+      console.log(this.fav);*/
     },
     onClickRemove(favoriteId) {
       this.$store.commit("removeFav", favoriteId);
@@ -36,6 +40,12 @@ export default {
   mounted() {
     this.updateBoundingBox();
   },
+  // highlightFavs(){
+  //   //const middle = elem.getBoundingClientRect().left + (2 * elem.getBoundingClientRect().width)
+  //   if(this.currentX < innerWidth/2){
+
+  //   }
+  // },
 };
 </script>
 

@@ -49,6 +49,7 @@ export default {
         x: this.currentX,
         y: this.currentY,
       });
+      console.log(this.currentX, this.currentY);
     },
   },
 };
