@@ -14,15 +14,18 @@
         </div>
       </li>
     </ul>
+    <HalfFavourite :fav-index="findFirstHalf()" />
+    <HalfFavourite :fav-index="findSecondHalf()" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import Favorite from "@/components/Favorite.vue";
+import HalfFavourite from "@/components/HalfFavourite.vue";
 export default {
   name: "Favorites",
-  components: { Favorite },
+  components: { Favorite, HalfFavourite },
   computed: {
     ...mapGetters(["favorites", "getCurrentCoor"]),
   },
@@ -41,6 +44,18 @@ export default {
     };
   },
   methods: {
+    findFirstHalf() {
+      const n = this.favorites.length;
+      if (n > 2) {
+        if (n >= 6) {
+          return [0, 1, 4, 5];
+        }
+      }
+      return [n];
+    },
+    findSecondHalf() {
+      return [2, 3, 6, 7];
+    },
     updateBoundingBox() {
       const rect = this.$refs.parent.getBoundingClientRect();
       console.log(rect);

@@ -10,16 +10,16 @@ export default new Vuex.Store({
       y: 0,
     },
     favorites: [
-      {
-        name: "YouTube",
-        id: 1,
-        url: "https://www.youtube.com",
-      },
-      {
-        name: "Gmail",
-        id: 2,
-        url: "https://www.gmail.com",
-      },
+      // {
+      //   name: "YouTube",
+      //   id: 1,
+      //   url: "https://www.youtube.com",
+      // },
+      // {
+      //   name: "Gmail",
+      //   id: 2,
+      //   url: "https://www.gmail.com",
+      // },
     ],
     middle: {
       middle: null,

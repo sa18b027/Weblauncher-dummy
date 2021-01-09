@@ -20,9 +20,9 @@ export default {
   },
   data() {
     return {
-      xMin: 0, //getBoundingClientRect.left
+      xMin: 0, //getBoundingClientRect.x/getBoundingClient.left
       xMax: 0, //.right
-      yMin: 0, //.top
+      yMin: 0, //.y/.top
       yMax: 0, //.bottom
     };
   },
