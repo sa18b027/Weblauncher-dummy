@@ -5,29 +5,49 @@
       <Favorite
         v-for="(favorite, index) in favorites"
         :key="index"
-        :highlighted="isHighlighted(index)"
+        :highlighted="arrIsHighlighted[index]"
         :fav="favorite"
       />
-      <li class="favorite-element">
-        <div v-bind:class="[isHighlighted(7) ? 'highlighted' : '']">
+      <li v-show="favorites.length < 8" class="favorite-element">
+        <div v-bind:class="[arrIsHighlighted[7] ? 'highlighted' : '']">
           <slot></slot>
         </div>
       </li>
     </ul>
-    <HalfFavourite :fav-index="findFirstHalf()" />
-    <HalfFavourite :fav-index="findSecondHalf()" />
+    <HalfFavourite
+      :fav-index="determineFirstHalf()"
+      :x1="xMin"
+      :y1="yMin"
+      :x2="xMax"
+      :y2="yMax"
+      @highlighted="handleHighlighted"
+    />
+    <HalfFavourite
+      :fav-index="determineSecondHalf()"
+      :x1="xMin"
+      :y1="yMin"
+      :x2="xMax"
+      :y2="yMax"
+      @highlighted="handleHighlighted"
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 import Favorite from "@/components/Favorite.vue";
 import HalfFavourite from "@/components/HalfFavourite.vue";
 export default {
   name: "Favorites",
   components: { Favorite, HalfFavourite },
   computed: {
-    ...mapGetters(["favorites", "getCurrentCoor"]),
+    ...mapGetters([
+      "favorites",
+      "getCurrentCoor",
+      "getSelected",
+      "getHighlighted",
+    ]),
   },
   data() {
     return {
@@ -35,95 +55,118 @@ export default {
       xMax: 0, //.right
       yMin: 0, //.top
       yMax: 0, //.bottom
-      x_Middle: 0,
-      xMiddleMiddle: 0,
-      xMiddleMiddleMiddle: 0,
-      middleLeft: 0,
-      yMiddle: 0,
-      iterations: 0,
+      // x_Middle: 0,
+      // xMiddleMiddle: 0,
+      // xMiddleMiddleMiddle: 0,
+      // middleLeft: 0,
+      // yMiddle: 0,
+      // iterations: 0,
+      selectionRunning: 0,
+      selected: [],
+      arrIsHighlighted: [],
     };
   },
   methods: {
-    findFirstHalf() {
-      const n = this.favorites.length;
-      if (n > 2) {
-        if (n >= 6) {
-          return [0, 1, 4, 5];
-        }
+    ...mapMutations(["setSelected"]),
+    handleHighlighted: function(arrHighlighted) {
+      for (let i = 0; i < this.favorites.length; i++) {
+        this.arrIsHighlighted[i] = arrHighlighted.includes(i);
       }
-      return [n];
+      if (this.selectionRunning == 0 && this.selected.length > 1) {
+        this.selectionRunning = 1;
+        setTimeout(() => {
+          this.selected = this.getHighlighted;
+          this.setSelected(this.selected);
+          this.selectionRunning = 0;
+          console.log(this.selected);
+        }, 5000);
+      } else if (this.selected.length == 1) {
+        console.log(this.favorites[this.selected[0]].url);
+        window.location.href = this.favorites[this.selected[0]].url;
+        this.selected = [];
+
+        this.selectionRunning = 0;
+
+        this.arrIsHighlighted = [];
+        this.setSelected(this.selected);
+      }
+
+      //console.log(this.selected);
     },
-    findSecondHalf() {
-      return [2, 3, 6, 7];
+    determineFirstHalf() {
+      let result = [];
+      let selected = this.getSelected;
+      if (selected.length > 4) {
+        result = [0, 1, 4];
+        if (selected.length > 5) {
+          result.push(5);
+        }
+      } else if (selected.length > 2) {
+        result = [selected[0], selected[1]];
+      } else if (selected.length > 0) {
+        result = [selected[0]];
+      }
+      //console.log(result);
+      return result;
+    },
+    determineSecondHalf() {
+      let result = [];
+      let selected = this.getSelected;
+      if (selected.length == 8) {
+        result = [2, 3, 6, 7];
+      } else if (selected.length == 7) {
+        result = [2, 3, 6];
+      } else if (selected.length > 4) {
+        result = [2, 3];
+      } else if (selected.length == 4) {
+        result = [selected[2], selected[3]];
+      } else if (selected.length == 3) {
+        result = [selected[2]];
+      } else if (selected.length == 2) {
+        result = [selected[1]];
+      }
+      //console.log(result);
+      return result;
     },
     updateBoundingBox() {
       const rect = this.$refs.parent.getBoundingClientRect();
       console.log(rect);
       console.log("favorite parent");
-      let ul_middle = (rect.right - rect.left) / 2;
+      // let ul_middle = (rect.right - rect.left) / 2;
 
-      this.xMiddle = ul_middle + rect.left;
+      // this.xMiddle = ul_middle + rect.left;
 
-      //left
-      this.xMiddleMiddle = ul_middle / 2 + rect.left;
-      //right
-      this.xMiddleMiddleMiddle = (ul_middle / 2) * 3 + rect.left;
+      // //left
+      // this.xMiddleMiddle = ul_middle / 2 + rect.left;
+      // //right
+      // this.xMiddleMiddleMiddle = (ul_middle / 2) * 3 + rect.left;
 
-      //this.$store.commit("coordinates_area", { middle: middle });
+      // //this.$store.commit("coordinates_area", { middle: middle });
     },
     onClickRemove(favoriteId) {
       this.$store.commit("removeFav", favoriteId);
     },
-    isHighlighted(index) {
-      console.log("+++++++++++++++++++++++++++");
-      //console.log(this.selection);
-
-      let highlighted = false;
-
-      //console.log(this.xMiddleMiddle);
-      //console.log(this.xMiddleMiddleMiddle);
-      //ifif (
-      //this.selection == -1 &&
-      /*if (
-        this.iterations == 1 &&
-        this.getCurrentCoor.x < this.xMiddleMiddle &&
-        [0, 4].includes(index)
-      ) {
-        highlighted = true;
-        //return true;
-      } else if (
-        this.iterations == 1 &&
-        this.getCurrentCoor.x > this.xMiddleMiddleMiddle &&
-        [3, 7].includes(index)
-      ) {
-        highlighted = true;
-        //return true;
-      } else */
-      if (
-        this.getCurrentCoor.x < this.xMiddle &&
-        [0, 1, 4, 5].includes(index)
-      ) {
-        //this.selection = -1;
-        highlighted = true;
-      } else if (
-        this.getCurrentCoor.x > this.xMiddle &&
-        [2, 3, 6, 7].includes(index)
-      ) {
-        //this.selection = 1;
-        highlighted = true;
-        /*if (index == 7) {
-          this.iterations++;
-        }*/
-      } else {
-        highlighted = false;
-      }
-
-      //console.log(this.iterations);
-      return highlighted;
-    },
   },
   mounted() {
     this.updateBoundingBox();
+  },
+  updated() {
+    const rect = this.$refs.parent.getBoundingClientRect();
+    this.xMin = rect.left;
+    this.xMax = rect.right;
+    this.yMin = rect.top;
+    this.yMax = rect.bottom;
+
+    let selected = this.getSelected;
+    if (selected.length == 0) {
+      for (let i = 0; i < this.favorites.length; i++) {
+        selected.push(i);
+      }
+      this.setSelected(selected);
+    }
+    this.selected = selected;
+
+    //console.log( this.arrIsHighlighted);
   },
 };
 </script>

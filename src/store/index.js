@@ -14,13 +14,10 @@ export default new Vuex.Store({
       //   name: "YouTube",
       //   id: 1,
       //   url: "https://www.youtube.com",
-      // },
-      // {
-      //   name: "Gmail",
-      //   id: 2,
-      //   url: "https://www.gmail.com",
-      // },
+      // }
     ],
+    highlighted: [],
+    selected: [],
     middle: {
       middle: null,
     },
@@ -31,6 +28,13 @@ export default new Vuex.Store({
       state.current.x = payload.x;
       state.current.y = payload.y;
     },
+    setHighlighted(state, value) {
+      state.highlighted = value;
+    },
+    setSelected(state, value) {
+      state.selected = value;
+    },
+
     showModal(state) {
       state.showAddFavoritesModal = true;
     },
@@ -42,8 +46,8 @@ export default new Vuex.Store({
 
       console.log("add favorite");
       console.log(state.favorites);
-
-      if (state.favorites.length < 7) {
+      state.selected = [];
+      if (state.favorites.length < 8) {
         state.favorites.push({
           id: state.favorites.length + 1,
           name: data.name,
@@ -59,6 +63,7 @@ export default new Vuex.Store({
     },
 
     removeFav: function(state, favoriteId) {
+      state.selected = [];
       const index = state.favorites.findIndex((elem) => {
         return elem.id === favoriteId;
       });
@@ -84,6 +89,12 @@ export default new Vuex.Store({
     },
     getCurrentCoor(state) {
       return state.current;
+    },
+    getHighlighted(state) {
+      return state.highlighted;
+    },
+    getSelected(state) {
+      return state.selected;
     },
   },
   actions: {},
