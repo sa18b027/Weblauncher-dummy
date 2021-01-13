@@ -1,5 +1,5 @@
 <template>
-  <button @click="onClick" class="">Add Favorite</button>
+  <button @click="onClick" class="" id="addfav">Add Favorite</button>
 </template>
 
 <script>

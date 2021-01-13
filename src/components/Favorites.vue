@@ -9,7 +9,7 @@
         :fav="favorite"
       />
       <li v-show="favorites.length < 8" class="favorite-element">
-        <div v-bind:class="[arrIsHighlighted[7] ? 'highlighted' : '']">
+        <div v-bind:class="[isSlotHighlighted ? 'highlighted' : '']">
           <slot></slot>
         </div>
       </li>
@@ -55,15 +55,10 @@ export default {
       xMax: 0, //.right
       yMin: 0, //.top
       yMax: 0, //.bottom
-      // x_Middle: 0,
-      // xMiddleMiddle: 0,
-      // xMiddleMiddleMiddle: 0,
-      // middleLeft: 0,
-      // yMiddle: 0,
-      // iterations: 0,
       selectionRunning: 0,
       selected: [],
       arrIsHighlighted: [],
+      isSlotHighlighted: 0,
     };
   },
   methods: {
@@ -71,6 +66,14 @@ export default {
     handleHighlighted: function(arrHighlighted) {
       for (let i = 0; i < this.favorites.length; i++) {
         this.arrIsHighlighted[i] = arrHighlighted.includes(i);
+      }
+      if (
+        this.favorites.length < 8 &&
+        arrHighlighted.includes(this.favorites.length)
+      ) {
+        this.isSlotHighlighted = 1;
+      } else {
+        this.isSlotHighlighted = 0;
       }
       if (this.selectionRunning == 0 && this.selected.length > 1) {
         this.selectionRunning = 1;
@@ -80,13 +83,17 @@ export default {
           this.selectionRunning = 0;
           console.log(this.selected);
         }, 5000);
-      } else if (this.selected.length == 1) {
-        console.log(this.favorites[this.selected[0]].url);
-        window.location.href = this.favorites[this.selected[0]].url;
+      } else if (this.selectionRunning == 0 && this.selected.length == 1) {
+        //console.log(this.favorites[this.selected[0]].url);
+        if (this.isSlotHighlighted) {
+          console.log("click add favorite");
+          document.getElementById("addfav").click();
+        } else {
+          window.open(this.favorites[this.selected[0]].url, "_blank");
+          location.reload();
+        }
         this.selected = [];
-
         this.selectionRunning = 0;
-
         this.arrIsHighlighted = [];
         this.setSelected(this.selected);
       }
@@ -128,27 +135,12 @@ export default {
       //console.log(result);
       return result;
     },
-    updateBoundingBox() {
-      const rect = this.$refs.parent.getBoundingClientRect();
-      console.log(rect);
-      console.log("favorite parent");
-      // let ul_middle = (rect.right - rect.left) / 2;
-
-      // this.xMiddle = ul_middle + rect.left;
-
-      // //left
-      // this.xMiddleMiddle = ul_middle / 2 + rect.left;
-      // //right
-      // this.xMiddleMiddleMiddle = (ul_middle / 2) * 3 + rect.left;
-
-      // //this.$store.commit("coordinates_area", { middle: middle });
-    },
     onClickRemove(favoriteId) {
       this.$store.commit("removeFav", favoriteId);
     },
   },
   mounted() {
-    this.updateBoundingBox();
+    //this.updateBoundingBox();
   },
   updated() {
     const rect = this.$refs.parent.getBoundingClientRect();
@@ -161,6 +153,9 @@ export default {
     if (selected.length == 0) {
       for (let i = 0; i < this.favorites.length; i++) {
         selected.push(i);
+      }
+      if (this.favorites.length < 8) {
+        selected.push(this.favorites.length);
       }
       this.setSelected(selected);
     }
