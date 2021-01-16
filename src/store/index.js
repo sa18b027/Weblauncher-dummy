@@ -5,10 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    current: {
-      x: 0,
-      y: 0,
-    },
+    current: { x: 0, y: 0 },
+    lastMouseForRelative: { x: 0, y: 0 },
     favorites: [
       // {
       //   name: "YouTube",
@@ -30,6 +28,9 @@ export default new Vuex.Store({
     },
     setHighlighted(state, value) {
       state.highlighted = value;
+    },
+    setLastMouseForRelative(state, value) {
+      state.lastMouseForRelative = value;
     },
     setSelected(state, value) {
       state.selected = value;
@@ -92,6 +93,9 @@ export default new Vuex.Store({
     },
     getHighlighted(state) {
       return state.highlighted;
+    },
+    getLastMouseForRelative(state) {
+      return state.lastMouseForRelative;
     },
     getSelected(state) {
       return state.selected;

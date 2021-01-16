@@ -20,6 +20,7 @@
       :y1="yMin"
       :x2="xMax"
       :y2="yMax"
+      :position="determinePos(0)"
       @highlighted="handleHighlighted"
     />
     <HalfFavourite
@@ -28,6 +29,7 @@
       :y1="yMin"
       :x2="xMax"
       :y2="yMax"
+      :position="determinePos(1)"
       @highlighted="handleHighlighted"
     />
   </div>
@@ -59,6 +61,8 @@ export default {
       selected: [],
       arrIsHighlighted: [],
       isSlotHighlighted: 0,
+      isAppOn: false,
+      mode: 1, // 1 absolute 2 relative
     };
   },
   methods: {
@@ -81,7 +85,7 @@ export default {
           this.selected = this.getHighlighted;
           this.setSelected(this.selected);
           this.selectionRunning = 0;
-          console.log(this.selected);
+          //console.log(this.selected);
         }, 5000);
       } else if (this.selectionRunning == 0 && this.selected.length == 1) {
         //console.log(this.favorites[this.selected[0]].url);
@@ -89,7 +93,7 @@ export default {
           console.log("click add favorite");
           document.getElementById("addfav").click();
         } else {
-          window.open(this.favorites[this.selected[0]].url, "_blank");
+          //window.open(this.favorites[this.selected[0]].url, "_blank");
           location.reload();
         }
         this.selected = [];
@@ -99,6 +103,28 @@ export default {
       }
 
       //console.log(this.selected);
+    },
+    determinePos(index) {
+      let arrPosition = ["", ""]; //top bottom right left
+      if (this.mode == 1) {
+        return arrPosition[index];
+      }
+      if (this.mode == 2) {
+        let selected = this.getSelected;
+        if (selected.length > 4) {
+          arrPosition = ["left", "right"];
+        } else if (selected.length > 2) {
+          if (selected[2] - selected[0] > 3) {
+            arrPosition = ["top", "bottom"];
+          } else {
+            arrPosition = ["left", "right"];
+          }
+        } else if (selected.length > 0) {
+          arrPosition = ["left", "right"];
+        }
+      }
+
+      return arrPosition[index];
     },
     determineFirstHalf() {
       let result = [];
@@ -113,7 +139,6 @@ export default {
       } else if (selected.length > 0) {
         result = [selected[0]];
       }
-      //console.log(result);
       return result;
     },
     determineSecondHalf() {
@@ -139,16 +164,28 @@ export default {
       this.$store.commit("removeFav", favoriteId);
     },
   },
+  //hier stellt man den mode ein, relative= 2,oder absolute =1
   mounted() {
-    //this.updateBoundingBox();
+    this.mode = 1;
   },
   updated() {
+    if (this.getCurrentCoor.x != 0 || this.getCurrentCoor.y != 0) {
+      //mouse moved
+      this.isAppOn = true;
+    }
+    if (this.favorites.length == 0) {
+      //no favorites stored. do nothing
+      this.isAppOn = false;
+    }
+    if (!this.isAppOn) {
+      return;
+    }
     const rect = this.$refs.parent.getBoundingClientRect();
+
     this.xMin = rect.left;
     this.xMax = rect.right;
     this.yMin = rect.top;
     this.yMax = rect.bottom;
-
     let selected = this.getSelected;
     if (selected.length == 0) {
       for (let i = 0; i < this.favorites.length; i++) {
@@ -160,8 +197,6 @@ export default {
       this.setSelected(selected);
     }
     this.selected = selected;
-
-    //console.log( this.arrIsHighlighted);
   },
 };
 </script>
