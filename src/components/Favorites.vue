@@ -53,7 +53,7 @@ export default {
   },
   data() {
     return {
-      xMin: 0, //getBoundingClientRect.left
+      xMin: 0, //getBoundingClientRect.left, blaues Rechteck
       xMax: 0, //.right
       yMin: 0, //.top
       yMax: 0, //.bottom
@@ -107,7 +107,7 @@ export default {
     determinePos(index) {
       let arrPosition = ["", ""]; //top bottom right left
       if (this.mode == 1) {
-        return arrPosition[index];
+        return arrPosition[index]; //mode 1, mach nix
       }
       if (this.mode == 2) {
         let selected = this.getSelected;

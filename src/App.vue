@@ -7,6 +7,7 @@
       v-bind:currentX="currentX"
       v-bind:currentY="currentY"
     /> -->
+    <GazeCloud @update="onUpdate" />
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -18,11 +19,13 @@
 //import WebGazer from "@/components/WebGazer.vue";
 //import Keyboard
 // import Favorites from "@/components/Favorites.vue";
+import GazeCloud from "@/components/GazeCloud.vue";
 
 import { mapMutations } from "vuex";
 
 export default {
   name: "App",
+  components: { GazeCloud },
   // components: {WebGazer},
   // components: { Favorites },
   data: () => ({
