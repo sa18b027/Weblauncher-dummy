@@ -13,71 +13,45 @@
         border-radius: 100%;
         opacity: 0.7;
         width: 10px;
-        height: 10px;
-      "
+        height: 10px;"
     ></div>
   </div>
 </template>
 
 <script>
 export default {
-    name: "GazeCloud",
-    data() {
-        return {
-            x: 0,
-            y: 0,
-        };
-    },
-    computed: {​​
-
-    style () {​​
-
-        return {​​ transform: 'translate3d(' +this.x +'px, '+ this.y +'px, 0px)'}​​
-
-     }​​
-
+  name: "GazeCloud",
+  data() {
+    return {
+      x: 0,
+      y: 0,
+    };
   },
-  ​​ created() {​​
-
-    if(window.GazeCloudAPI) {​​
-
+  computed: {
+    style() {
+      return { tranform: "translate3d(" + this.x + "px, " + this.y + "px, 0x" };
+    },
+  },
+  created() {
+    if (window.GazeCloudAPI) {
       const thiz = this;
-
       window.GazeCloudAPI.StartEyeTracking();
-
       window.GazeCloudAPI.UseClickRecalibration = true;
-
-      window.GazeCloudAPI.OnCalibrationComplete =function(){​​
-
+      window.GazeCloudAPI.OnCalibrationComplete = function() {
         console.log("Calibration complete");
-
-        window.GazeCloudAPI.OnResult = function(GazeData) {​​
-
-          //console.log("$$$$$RESULTSW in COMPLETE $$$$$$$$$$$$$");
-
+        window.GazeCloudAPI.OnResult = function(GazeData) {
           thiz.updateGazeData(GazeData);
-
-        }​​;
-
-      }​​;
-
-    }​​
-
-
-
-    }​​,
-  methods: {​​
-
-    updateGazeData(GazeData){​​
-
-        this.x = GazeData.GazeX;
-
-        this.y = GazeData.GazeY;
-    //emit when calling from App component
-    // this.$emit("update", {​​x: this.x, y:this.y}​​);
-}​​
-}​​,
-}
+        };
+      };
+    }
+  },
+  methods: {
+    updateGazeData(GazeData) {
+      this.x = GazeData.x;
+      this.y = GazeData.y;
+    },
+  },
+};
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

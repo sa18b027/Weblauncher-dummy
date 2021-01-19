@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     current: { x: 0, y: 0 },
     lastMouseForRelative: { x: 0, y: 0 },
+    arrowDirection: "",
     favorites: [
       // {
       //   name: "YouTube",
@@ -35,7 +36,9 @@ export default new Vuex.Store({
     setSelected(state, value) {
       state.selected = value;
     },
-
+    setArrowDirection(state, value) {
+      state.arrowDirection = value;
+    },
     showModal(state) {
       state.showAddFavoritesModal = true;
     },
@@ -99,6 +102,9 @@ export default new Vuex.Store({
     },
     getSelected(state) {
       return state.selected;
+    },
+    getArrowDirection(state) {
+      return state.arrowDirection;
     },
   },
   actions: {},

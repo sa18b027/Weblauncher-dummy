@@ -18,7 +18,10 @@ export default {
     x2: { type: Number }, //unten rechts
     y2: { type: Number }, //unten rechts
     position: { type: String }, //z.B.left,rigth,top, bottom
+    mode: { type: Number },
+    arrow: { type: String }, //z.B.left,rigth,top, bottom
   },
+
   data() {
     return {
       xMin: 0, //getBoundingClientRect.leftKoordinaten von der Hälfte, die ändern sich ständig
@@ -26,20 +29,32 @@ export default {
       yMin: 0, //.top
       yMax: 0, //.bottom
       counter: 0,
+      arrowDirection: "",
     };
   },
   computed: {
-    ...mapGetters(["getCurrentCoor", "getLastMouseForRelative"]),
+    ...mapGetters([
+      "getCurrentCoor",
+      "getLastMouseForRelative",
+      "getArrowDirection",
+    ]),
   },
   watch: {
+    //handelt highlighted für Pfeiltasten
+    arrow(value) {
+      if (this.mode == 3 && value == this.position) {
+        this.setHighlighted(this.FavIndex);
+        this.$emit("highlighted", this.FavIndex);
+      }
+    },
+    //achtet auf Favindex, welche Kacheln zugewiesen sind
     FavIndex(arrIndex) {
+      if (this.mode == 3) return;
+
       // console.log("this arrIndex", arrIndex);
       if (arrIndex.length > 0) {
         //arrIndex[0]=ist die Stelle des Index von der gewählten Kachel
         let index = arrIndex[0] % 4; //0,1,2,3
-        //console.log("this x1:", this.x1);
-        //console.log(this.x2);
-        //this.xMin =
         this.xMin = this.x1 + (index * (this.x2 - this.x1)) / 4; //Hälfte vom großen Rechteck(blau)=thisx2-this.x1
         index = 0;
         //y nur 2 Möglichkewiten,index 0=Kacheln[0,1,2,3], index 1=[4,5,6,7]
@@ -68,7 +83,7 @@ export default {
         this.yMax = 0;
       }
       //liegt die Maus innerhalb vom Rechteck oder nicht?
-      if (this.position == "") {
+      if (this.mode == "1") {
         //absolute   mode
         if (
           this.getCurrentCoor.x < this.xMax &&
@@ -115,11 +130,8 @@ export default {
               direction = "bottom";
             }
           }
-
-          //console.log(direction + " " + this.position)
           if (direction == this.position) {
-            console.log(direction);
-            console.log(arrIndex);
+            //highlight me. i have been chosen
             this.setHighlighted(arrIndex);
             this.$emit("highlighted", arrIndex);
           }
@@ -127,11 +139,13 @@ export default {
               console.log(this.getLastMouseForRelative.x + ", " + this.getLastMouseForRelative.y);
               console.log(direction);*/
           //Startschuss für die nächste Runde
-          if (this.position == "right" || this.position == "bottom")
+          if (this.position == "right" || this.position == "bottom") {
+            //Only for half number 2.
             this.setLastMouseForRelative({
               x: this.getCurrentCoor.x,
               y: this.getCurrentCoor.y,
             });
+          }
         } else {
           this.counter++;
         }
@@ -142,7 +156,7 @@ export default {
     ...mapMutations(["setHighlighted", "setLastMouseForRelative"]),
   },
   mounted() {
-    console.log(this.FavIndex);
+    //console.log(this.FavIndex);
   },
 };
 </script>

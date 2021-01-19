@@ -1,7 +1,7 @@
 <template>
   <li class="favorite-element" ref="elem">
     <div v-bind:class="[highlighted ? 'highlighted' : '']">
-      <a :href="fav.url">{{ fav.name }}<br />{{ fav.id }}</a>
+      <span :href="fav.url">{{ fav.name }}<br />{{ fav.id }}</span>
       <div>{{ highlighted }}</div>
       <button @click="onClickRemove(fav.id)">Löschen</button>
     </div>

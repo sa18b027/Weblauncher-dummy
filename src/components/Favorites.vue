@@ -1,7 +1,11 @@
 <template>
   <div>
     <div>{{ getCurrentCoor }}</div>
-    <ul ref="parent" style="background-color: blue !important">
+    <ul
+      ref="parent"
+      style="background-color: blue !important"
+      @click="handleClick"
+    >
       <Favorite
         v-for="(favorite, index) in favorites"
         :key="index"
@@ -21,7 +25,9 @@
       :x2="xMax"
       :y2="yMax"
       :position="determinePos(0)"
+      :mode="mode"
       @highlighted="handleHighlighted"
+      :arrow="arrow"
     />
     <HalfFavourite
       :fav-index="determineSecondHalf()"
@@ -30,12 +36,15 @@
       :x2="xMax"
       :y2="yMax"
       :position="determinePos(1)"
+      :mode="mode"
       @highlighted="handleHighlighted"
+      :arrow="arrow"
     />
   </div>
 </template>
 
 <script>
+//       @keyup.native="handleKeyup($event)"
 import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 import Favorite from "@/components/Favorite.vue";
@@ -49,28 +58,32 @@ export default {
       "getCurrentCoor",
       "getSelected",
       "getHighlighted",
+      "getArrowDirection",
     ]),
   },
   data() {
     return {
-      xMin: 0, //getBoundingClientRect.left, blaues Rechteck
+      xMin: 0, //getBoundingClientRect.left
       xMax: 0, //.right
       yMin: 0, //.top
       yMax: 0, //.bottom
-      selectionRunning: 0,
+      //selectionRunning: 0,
       selected: [],
       arrIsHighlighted: [],
       isSlotHighlighted: 0,
       isAppOn: false,
-      mode: 1, // 1 absolute 2 relative
+      mode: 1, // 1 absolute 2 relative 3 arrows
+      arrow: "",
     };
   },
   methods: {
-    ...mapMutations(["setSelected"]),
+    ...mapMutations(["setSelected", "setArrowDirection"]),
     handleHighlighted: function(arrHighlighted) {
+      //console.log(arrHighlighted);array speichert die indexe von den gehighlightetetn Kacheln
       for (let i = 0; i < this.favorites.length; i++) {
         this.arrIsHighlighted[i] = arrHighlighted.includes(i);
       }
+      //ist der slot gehighlightet oder nicht
       if (
         this.favorites.length < 8 &&
         arrHighlighted.includes(this.favorites.length)
@@ -79,7 +92,10 @@ export default {
       } else {
         this.isSlotHighlighted = 0;
       }
-      if (this.selectionRunning == 0 && this.selected.length > 1) {
+      if (this.mode == 3) {
+        this.xMin = 6; // any random value to refreh the child component. xMin does not play any role in mode 3, damit vue das Bild neuzeichnet
+      }
+      /*if (this.selectionRunning == 0 && this.selected.length > 1) {
         this.selectionRunning = 1;
         setTimeout(() => {
           this.selected = this.getHighlighted;
@@ -93,23 +109,45 @@ export default {
           console.log("click add favorite");
           document.getElementById("addfav").click();
         } else {
-          //window.open(this.favorites[this.selected[0]].url, "_blank");
+          window.open(this.favorites[this.selected[0]].url, "_blank");
           location.reload();
         }
         this.selected = [];
         this.selectionRunning = 0;
         this.arrIsHighlighted = [];
         this.setSelected(this.selected);
-      }
+      } */
 
       //console.log(this.selected);
+    },
+    handleClick: function() {
+      //console.log('clicked');
+      if (this.selected.length > 1) {
+        this.selected = this.getHighlighted;
+        this.setSelected(this.selected);
+        if (this.selected.length == 1) {
+          this.handleClick();
+        }
+      } else if (this.selected.length == 1) {
+        //console.log(this.favorites[this.selected[0]].url);
+        if (this.isSlotHighlighted) {
+          console.log("click add favorite");
+          document.getElementById("addfav").click();
+        } else {
+          window.open(this.favorites[this.selected[0]].url, "_blank");
+          location.reload();
+        }
+        this.selected = [];
+        this.arrIsHighlighted = [];
+        this.setSelected(this.selected);
+      }
     },
     determinePos(index) {
       let arrPosition = ["", ""]; //top bottom right left
       if (this.mode == 1) {
-        return arrPosition[index]; //mode 1, mach nix
+        return arrPosition[index];
       }
-      if (this.mode == 2) {
+      if (this.mode == 2 || this.mode == 3) {
         let selected = this.getSelected;
         if (selected.length > 4) {
           arrPosition = ["left", "right"];
@@ -125,6 +163,32 @@ export default {
       }
 
       return arrPosition[index];
+    },
+    //Pfeiltasten, 13=enter
+    onKeyup(e) {
+      console.log(e);
+      if (this.mode == 3) {
+        e = e || window.event;
+        if (e.keyCode == "13") {
+          this.handleClick();
+          return;
+        }
+        //console.log(e);
+        let direction = "";
+        if (e.keyCode == "38") {
+          direction = "top";
+        } else if (e.keyCode == "40") {
+          direction = "bottom";
+        } else if (e.keyCode == "37") {
+          direction = "left";
+        } else if (e.keyCode == "39") {
+          direction = "right";
+        }
+        if (direction != "") {
+          this.arrow = direction;
+          this.setArrowDirection(direction);
+        }
+      }
     },
     determineFirstHalf() {
       let result = [];
@@ -164,12 +228,17 @@ export default {
       this.$store.commit("removeFav", favoriteId);
     },
   },
-  //hier stellt man den mode ein, relative= 2,oder absolute =1
+  //hier stellt man den mode ein, relative= 2,oder absolute =1,mode 3= Pfeiltasten, eventListener für mode 3
   mounted() {
-    this.mode = 1;
+    this.mode = 3;
+    window.addEventListener("keyup", this.onKeyup);
   },
   updated() {
-    if (this.getCurrentCoor.x != 0 || this.getCurrentCoor.y != 0) {
+    if (
+      this.getCurrentCoor.x != 0 ||
+      this.getCurrentCoor.y != 0 ||
+      this.mode == 3
+    ) {
       //mouse moved
       this.isAppOn = true;
     }
