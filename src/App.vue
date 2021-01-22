@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- <WebGazer @update="onUpdate" :off="false" /> -->
+    <WebGazer @onUpdated="onNewData" :off="false" />
     <!-- <Favorites
       @update="onUpdate"
       :off="false"
@@ -17,7 +17,7 @@
   </div>
 </template>
 <script>
-//import WebGazer from "@/components/WebGazer.vue";
+import WebGazer from "@/components/WebGazer.vue";
 
 // import Favorites from "@/components/Favorites.vue";
 //import GazeCloud from "@/components/GazeCloud.vue";
@@ -29,13 +29,15 @@ export default {
   name: "App",
   //components:
   //{ GazeCloud },
-  // components: {WebGazer},
+  components: { WebGazer },
   // components: { Favorites },
   data: () => ({
     windowHeight: 0,
     windowWidth: 0,
     currentX: 0,
     currentY: 0,
+    x: 0,
+    y: 0,
   }),
 
   created: function() {
@@ -56,6 +58,15 @@ export default {
         y: this.currentY,
       });
       console.log(this.currentX, this.currentY);
+    },
+    onNewData(coord) {
+      this.x = coord.x;
+
+      this.y = coord.y;
+
+      console.log("This is X-Value:", this.x);
+
+      console.log("This is Y-Value:", this.y);
     },
   },
 };
