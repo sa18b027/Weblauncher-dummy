@@ -29,7 +29,9 @@ export default {
   },
   computed: {
     style() {
-      return { tranform: "translate3d(" + this.x + "px, " + this.y + "px, 0x" };
+      return {
+        tranform: "translate3d(" + this.x + "px, " + this.y + "px, 0x)",
+      };
     },
   },
   created() {

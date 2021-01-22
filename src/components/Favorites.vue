@@ -1,6 +1,16 @@
 <template>
   <div>
-    <div>{{ getCurrentCoor }}</div>
+    <div>
+      {{ getCurrentCoor }} <br />
+      <br />
+      Mode:<br />
+      <select name="mode" id="mode" :value="mode" @change="changeMode">
+        <option value="1">Absolut</option>
+        <option value="2">Relativ</option>
+        <option value="3">Tasten</option>
+        <option value="4">Gaze</option>
+      </select>
+    </div>
     <ul
       ref="parent"
       style="background-color: blue !important"
@@ -78,6 +88,11 @@ export default {
   },
   methods: {
     ...mapMutations(["setSelected", "setArrowDirection"]),
+    changeMode: function(value) {
+      this.mode = parseInt(value.target.value);
+      localStorage.setItem("mode", this.mode);
+      document.getElementById("mode").blur();
+    },
     handleHighlighted: function(arrHighlighted) {
       //console.log(arrHighlighted);array speichert die indexe von den gehighlightetetn Kacheln
       for (let i = 0; i < this.favorites.length; i++) {
@@ -230,7 +245,11 @@ export default {
   },
   //hier stellt man den mode ein, relative= 2,oder absolute =1,mode 3= Pfeiltasten, eventListener für mode 3
   mounted() {
-    this.mode = 3;
+    if (localStorage.getItem("mode")) {
+      this.mode = parseInt(localStorage.getItem("mode"));
+    } else {
+      this.mode = 1;
+    }
     window.addEventListener("keyup", this.onKeyup);
   },
   updated() {

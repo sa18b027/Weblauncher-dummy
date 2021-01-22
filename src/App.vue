@@ -12,18 +12,20 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
+
     <router-view />
   </div>
 </template>
 <script>
 //import WebGazer from "@/components/WebGazer.vue";
-//import Keyboard from "@/components/Keyboard.vue";
+
 // import Favorites from "@/components/Favorites.vue";
 //import GazeCloud from "@/components/GazeCloud.vue";
 
 import { mapMutations } from "vuex";
 
 export default {
+  // components: { Tastatur },
   name: "App",
   //components:
   //{ GazeCloud },
