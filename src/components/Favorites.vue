@@ -8,7 +8,7 @@
         <option value="1">Absolut</option>
         <option value="2">Relativ</option>
         <option value="3">Tasten</option>
-        <option value="4">Gaze</option>
+        <option value="4">WebGazer</option>
       </select>
     </div>
     <ul
@@ -34,6 +34,8 @@
       :y1="yMin"
       :x2="xMax"
       :y2="yMax"
+      :sizex="4"
+      :sizey="2"
       :position="determinePos(0)"
       :mode="mode"
       @highlighted="handleHighlighted"
@@ -45,6 +47,8 @@
       :y1="yMin"
       :x2="xMax"
       :y2="yMax"
+      :sizex="4"
+      :sizey="2"
       :position="determinePos(1)"
       :mode="mode"
       @highlighted="handleHighlighted"

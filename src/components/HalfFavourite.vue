@@ -17,6 +17,8 @@ export default {
     y1: { type: Number }, //oben link
     x2: { type: Number }, //unten rechts
     y2: { type: Number }, //unten rechts
+    sizex: { type: Number }, //Anzahl von Kacheln in einer Reihe
+    sizey: { type: Number }, //Anzahl von Kacheln in einer Spalte
     position: { type: String }, //z.B.left,rigth,top, bottom
     mode: { type: Number },
     arrow: { type: String }, //z.B.left,rigth,top, bottom
@@ -54,28 +56,20 @@ export default {
       // console.log("this arrIndex", arrIndex);
       if (arrIndex.length > 0) {
         //arrIndex[0]=ist die Stelle des Index von der gewählten Kachel
-        let index = arrIndex[0] % 4; //0,1,2,3
-        this.xMin = this.x1 + (index * (this.x2 - this.x1)) / 4; //Hälfte vom großen Rechteck(blau)=thisx2-this.x1
-        index = 0;
-        //y nur 2 Möglichkewiten,index 0=Kacheln[0,1,2,3], index 1=[4,5,6,7]
-        if (arrIndex[0] > 3) {
-          index = 1;
-        }
-        this.yMin = this.y1 + (index * (this.y2 - this.y1)) / 2; //Hälfte bestimmen
+        let index = arrIndex[0] % this.sizex; //0,1,2,3
+        this.xMin = this.x1 + (index * (this.x2 - this.x1)) / this.sizex; //Hälfte vom großen Rechteck(blau)=thisx2-this.x1
+        index = parseInt(arrIndex[0] / this.sizex);
+        this.yMin = this.y1 + (index * (this.y2 - this.y1)) / this.sizey; //Hälfte bestimmen
         let lastIndex = arrIndex.length - 1; //arrIndex.length= Hälfte von Länge,max4
         //xMax:rechterRand
-        index = (arrIndex[lastIndex] % 4) + 1;
+        index = (arrIndex[lastIndex] % this.sizex) + 1;
         if (arrIndex.length == 3) {
           // shape is not rectangle
           index++; //rücke noch eins nach rechts, wenn 3Kacheln in einer Hälfte(L)
         }
-        this.xMax = this.x1 + (index * (this.x2 - this.x1)) / 4;
-        index = 1;
-        //yMax:
-        if (arrIndex[lastIndex] > 3) {
-          index = 2;
-        }
-        this.yMax = this.y1 + (index * (this.y2 - this.y1)) / 2;
+        this.xMax = this.x1 + (index * (this.x2 - this.x1)) / this.sizex;
+        index = parseInt(arrIndex[lastIndex] / this.sizex) + 1;
+        this.yMax = this.y1 + (index * (this.y2 - this.y1)) / this.sizey;
       } else {
         this.xMin = 0;
         this.xMax = 0;

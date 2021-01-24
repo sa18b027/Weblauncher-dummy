@@ -24,7 +24,7 @@ export default {
       const thiz = this;
       window.applyCalmanFilter = true;
       window.saveDataAccrossSessions = true;
-      webgazer.params.showVideoPreview = true;
+      webgazer.params.showVideoPreview = false;
       await webgazer
         .setRegression("ridge")
         .setGazeListener(function(data, elapsedTime) {

@@ -57,7 +57,7 @@ export default {
         x: this.currentX,
         y: this.currentY,
       });
-      console.log(this.currentX, this.currentY);
+      //console.log(this.currentX, this.currentY);
     },
     onNewData(coord) {
       this.x = coord.x;
