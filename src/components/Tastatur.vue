@@ -60,7 +60,7 @@ export default {
       "getArrowDirection",
     ]),
     //array mit a b c,...
-    arrButton: function() {
+    arrButton: function () {
       return this.buttons.split(" ");
     },
   },
@@ -181,7 +181,7 @@ export default {
       if (this.mode == 1) {
         return arrPosition[index];
       }
-      //alterniert zwischen links,rechts und obern,unten
+      //alterniert zwischen links,rechts und oben,unten
       if (this.mode == 2 || this.mode == 3) {
         let selected = this.getSelected;
         if (selected.length == 32 || selected.length == 8) {
@@ -193,7 +193,7 @@ export default {
 
       return arrPosition[index];
     },
-    handleHighlighted: function(arrHighlighted) {
+    handleHighlighted: function (arrHighlighted) {
       let selected = this.getSelected;
       let arrNotHighlighted = selected.filter(
         (n) => !arrHighlighted.includes(n)
@@ -213,7 +213,7 @@ export default {
 
       //console.log(this.selected);
     },
-    handleClick: function() {
+    handleClick: function () {
       if (this.selected.length > 1) {
         this.selected = this.getHighlighted;
         this.setSelected(this.selected);
@@ -333,39 +333,4 @@ export default {
 .highlighted {
   background-color: coral !important;
 }
-/* let keyboard = new Keyboard({
-  onChange: input => onChange(input),
-  onKeyPress: button => onKeyPress(button),
-  theme: "hg-theme-default hg-layout-default myTheme",
-  layout: {
-    default: [
-      "` 1 2 3 4 5 6 7 8 9 0 - = {bksp}",
-      "{tab} q w e r t y u i o p [ ] \\",
-      "{lock} a s d f g h j k l ; ' {enter}",
-      "{shift} z x c v b n m , . / {shift2}",
-      ".com @ {space}"
-    ],
-    shift: [
-      "~ ! @ # $ % ^ & * ( ) _ + {bksp}",
-      "{tab} Q W E R T Y U I O P { } |",
-      '{lock} A S D F G H J K L : " {enter}',
-      "{shift} Z X C V B N M < > ? {shift2}",
-      ".com @ {space}"
-    ]
-  },
-  buttonTheme: [
-    {
-      class: "hg-red",
-      buttons: "Q W E R T Y q w e r t y"
-    },
-    {
-      class: "hg-highlight",
-      buttons: "Q q"
-    }
-  ]
-});
-
-https://hodgef.com/simple-keyboard/editor/?d=hodgef/simple-keyboard-npm-demos/tree/uc-customization
-
- */
 </style>

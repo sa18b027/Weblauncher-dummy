@@ -13,12 +13,12 @@ export default {
       required: true,
     },
     //großes Rechteck
-    x1: { type: Number }, //oben links
+    x1: { type: Number }, //oben links äussere Rechteck
     y1: { type: Number }, //oben link
     x2: { type: Number }, //unten rechts
     y2: { type: Number }, //unten rechts
-    sizex: { type: Number }, //Anzahl von Kacheln in einer Reihe
-    sizey: { type: Number }, //Anzahl von Kacheln in einer Spalte
+    sizex: { type: Number }, //Anzahl von Reihen
+    sizey: { type: Number }, //Anzahl von Spalten
     position: { type: String }, //z.B.left,rigth,top, bottom
     mode: { type: Number },
     arrow: { type: String }, //z.B.left,rigth,top, bottom
@@ -55,17 +55,20 @@ export default {
 
       // console.log("this arrIndex", arrIndex);
       if (arrIndex.length > 0) {
-        //arrIndex[0]=ist die Stelle des Index von der gewählten Kachel
-        let index = arrIndex[0] % this.sizex; //0,1,2,3
-        this.xMin = this.x1 + (index * (this.x2 - this.x1)) / this.sizex; //Hälfte vom großen Rechteck(blau)=thisx2-this.x1
+        //arrIndex[0]=ist die Stelle des Index von der gewählten Kachel und KeyboardTaste
+        let index = arrIndex[0] % this.sizex; //0-15im Keyboard, 0,1,2,3 bei Kacheln
+        this.xMin = this.x1 + (index * (this.x2 - this.x1)) / this.sizex; //Breite vom großen Rechteck(blau)=thisx2-this.x1
         index = parseInt(arrIndex[0] / this.sizex);
         this.yMin = this.y1 + (index * (this.y2 - this.y1)) / this.sizey; //Hälfte bestimmen
-        let lastIndex = arrIndex.length - 1; //arrIndex.length= Hälfte von Länge,max4
+        let lastIndex = arrIndex.length - 1; //arrIndex.length= Hälfte von Länge,(max4bei Kacheln, bei Tatstatur max 32)-1
         //xMax:rechterRand
-        index = (arrIndex[lastIndex] % this.sizex) + 1;
-        if (arrIndex.length == 3) {
-          // shape is not rectangle
-          index++; //rücke noch eins nach rechts, wenn 3Kacheln in einer Hälfte(L)
+        index = (arrIndex[lastIndex] % this.sizex) + 1; //letzteTaste index=63%16=15+1=16
+        if (this.sizex == 4 && this.sizey == 2) {
+          //nurfür Kacheln
+          if (arrIndex.length == 3) {
+            // shape is not rectangle
+            index++; //rücke noch eins nach rechts, wenn 3Kacheln in einer Hälfte(L)
+          }
         }
         this.xMax = this.x1 + (index * (this.x2 - this.x1)) / this.sizex;
         index = parseInt(arrIndex[lastIndex] / this.sizex) + 1;
