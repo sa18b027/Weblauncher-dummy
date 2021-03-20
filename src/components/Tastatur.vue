@@ -61,6 +61,7 @@ export default {
       "getArrowDirection",
     ]),
     //array mit a b c,...
+<<<<<<< HEAD
     arrButton: function() {
       if(this.keySchalter){
             return this.buttons1.split(" ");
@@ -68,6 +69,10 @@ export default {
             return this.buttons2.split(" ");
       }
 
+=======
+    arrButton: function () {
+      return this.buttons.split(" ");
+>>>>>>> bd051bd63baeb00e234e9a4125567eb6388f656c
     },
   },
 
@@ -220,8 +225,13 @@ export default {
       if (this.mode == 1) {
         return arrPosition[index];
       }
+<<<<<<< HEAD
       //alterniert zwischen links,rechts und obern,unten
       if (this.mode == 2 || this.mode == 3 || this.mode == 4) {
+=======
+      //alterniert zwischen links,rechts und oben,unten
+      if (this.mode == 2 || this.mode == 3) {
+>>>>>>> bd051bd63baeb00e234e9a4125567eb6388f656c
         let selected = this.getSelected;
         if (selected.length == 32 || selected.length == 8) {
           arrPosition = ["top", "bottom"];
@@ -232,7 +242,7 @@ export default {
 
       return arrPosition[index];
     },
-    handleHighlighted: function(arrHighlighted) {
+    handleHighlighted: function (arrHighlighted) {
       let selected = this.getSelected;
       let arrNotHighlighted = selected.filter(
         (n) => !arrHighlighted.includes(n)
@@ -258,12 +268,16 @@ export default {
         }, 2500);      }
       //console.log(this.selected);
     },
+<<<<<<< HEAD
     handleClick: function() {
       let key = this.selq;
       let val = "";
       if(typeof this.storeInput[key] != "undefined"){
         val = this.storeInput[key];
       }
+=======
+    handleClick: function () {
+>>>>>>> bd051bd63baeb00e234e9a4125567eb6388f656c
       if (this.selected.length > 1) {
         this.selected = this.getHighlighted;
         this.setSelected(this.selected);
@@ -411,5 +425,8 @@ export default {
 .highlighted {
   background-color: coral !important;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bd051bd63baeb00e234e9a4125567eb6388f656c
 </style>
