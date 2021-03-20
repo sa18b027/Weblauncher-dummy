@@ -115,24 +115,6 @@ export default {
       if (this.mode == 3) {
         this.xMin = 6; // any random value to refreh the child component. xMin does not play any role in mode 3, damit vue das Bild neuzeichnet
       }
-      if (this.mode == 4) {
-        let snapShotHighlightedSituation = this.getHighlighted;
-        setTimeout(() => {
-          if(snapShotHighlightedSituation == this.getHighlighted){
-
-            if (this.selected.length == 1) {
-              //console.log(this.favorites[this.selected[0]].url);
-              if (this.isSlotHighlighted) {
-                console.log("click add favorite");
-                document.getElementById("addfav").click();
-              } else {
-                //this.
-                window.open(this.favorites[this.selected[0]].url, "_blank");
-                location.reload();
-              }
-            } else this.handleClick();
-          }
-        }, 2500);      }
       /*if (this.selectionRunning == 0 && this.selected.length > 1) {
         this.selectionRunning = 1;
         setTimeout(() => {
@@ -172,7 +154,6 @@ export default {
           console.log("click add favorite");
           document.getElementById("addfav").click();
         } else {
-          //this.
           window.open(this.favorites[this.selected[0]].url, "_blank");
           location.reload();
         }
@@ -203,16 +184,16 @@ export default {
 
       return arrPosition[index];
     },
-    adjustGazerClick(){
-       this.clicksGazer++ ;
-       if( this.clicksGazer >= 5){
-         this.isAppOn = true;
-          //this.handleClick();
-       }
+    adjustGazerClick() {
+      this.clicksGazer++;
+      if (this.clicksGazer >= 5) {
+        this.isAppOn = true;
+        this.handleClick();
+      }
     },
     //Pfeiltasten, 13=enter
     onKeyup(e) {
-     // console.log(e);
+      console.log(e);
       if (this.mode == 3) {
         e = e || window.event;
         if (e.keyCode == "13") {
@@ -282,15 +263,16 @@ export default {
       this.mode = 1;
     }
     window.addEventListener("keyup", this.onKeyup);
-    if(this.mode == 4){
-        window.addEventListener("click", this.adjustGazerClick);
+    if (this.mode == 4) {
+      window.addEventListener("click", this.adjustGazerClick);
     }
   },
   updated() {
     if (
       (this.getCurrentCoor.x != 0 ||
-      this.getCurrentCoor.y != 0 ||
-      this.mode == 3 ) &&  this.mode != 4  
+        this.getCurrentCoor.y != 0 ||
+        this.mode == 3) &&
+      this.mode != 4
     ) {
       //mouse moved
       this.isAppOn = true;

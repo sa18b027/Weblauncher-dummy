@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <WebGazer @onNewData="onNewData" :off="gazeroff" style="position: absolute;right: 0px;"/>
+    <WebGazer @onNewData="onNewData" :off="gazeroff" />
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -25,12 +25,12 @@ export default {
   }),
   computed: {
     gazeroff: function() {
-       //return true;
-       if (localStorage.getItem("mode")) {
+      //return true;
+      if (localStorage.getItem("mode")) {
         if (parseInt(localStorage.getItem("mode")) == 4) return false;
-      } 
-      return true 
-    } 
+      }
+      return true;
+    },
   },
   created: function() {
     this.windowHeight = window.innerHeight;
@@ -63,13 +63,4 @@ export default {
 };
 </script>
 
-<style>
-#webgazerVideoFeed, #webgazerFaceOverlay {
-  right: 0 !important;
-  left:auto !important;
-}
-#webgazerFaceFeedbackBox{
-  display:none !important;
-}
-
-</style>
+<style></style>

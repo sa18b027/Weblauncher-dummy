@@ -32,7 +32,6 @@ export default {
       yMax: 0, //.bottom
       counter: 0,
       arrowDirection: "",
-      arrHistoryLast30 : [],
     };
   },
   computed: {
@@ -93,6 +92,7 @@ export default {
       } else {
         //relative mode or webgazer
         //wenn leer, dann speichere die coor
+        //console.log("jj");
         if (
           this.getLastMouseForRelative.x == 0 &&
           this.getLastMouseForRelative.y == 0
@@ -103,47 +103,11 @@ export default {
             y: this.getCurrentCoor.y,
           });
         }
-        let arrHistoryLast30 = this.arrHistoryLast30;
-        if(this.position == "top" || this.position == "bottom"){
-          arrHistoryLast30.push(this.getCurrentCoor.y);
-        }else if(this.position == "left" || this.position == "right"){
-          arrHistoryLast30.push(this.getCurrentCoor.x);
-        }
         //warte auf 30 mouseBewegungen/events
         if (this.counter >= 30) {
           this.counter = 0;
           let direction = "";
-          let arrHistoryLast15 = arrHistoryLast30.splice(15,15);
-          arrHistoryLast30.sort(function(a, b) {
-            return a - b;
-          });
-          arrHistoryLast15.sort(function(a, b) {
-            return a - b;
-          });
-          let delta =0;
-          for(let i=3;i<12;i++){
-            delta = delta + arrHistoryLast15[i] - arrHistoryLast30[i];
-          }
-          const width = window.innerWidth
-              || document.documentElement.clientWidth
-              || document.body.clientWidth;
-
-          const height = window.innerHeight
-              || document.documentElement.clientHeight
-              || document.body.clientHeight;
-          if(this.position == "top" || this.position == "bottom"){
-            direction = "top";
-            if (delta > 0 || arrHistoryLast15[12] > (0.9 * height)) {
-              direction = "bottom";
-            }
-          }else if(this.position == "left" || this.position == "right"){
-            direction = "left";
-            if (delta > 0 || arrHistoryLast15[12] > (0.9 * width)) {
-              direction = "right";
-            }
-          }
-          this.arrHistoryLast30 = [];
-          /*if (
+          if (
             //Differenz von 2 Positionen,vorher,nachher
             Math.abs(this.getCurrentCoor.x - this.getLastMouseForRelative.x) >
             Math.abs(this.getCurrentCoor.y - this.getLastMouseForRelative.y)
@@ -153,15 +117,18 @@ export default {
               direction = "right";
             }
           } else if (
-            (Math.abs(this.getCurrentCoor.x - this.getLastMouseForRelative.x) <
-            Math.abs(this.getCurrentCoor.y - this.getLastMouseForRelative.y) )
-            || (this.mode == "4" &&  (this.position == "top" || this.position == "bottom"))
+            Math.abs(this.getCurrentCoor.x - this.getLastMouseForRelative.x) <
+              Math.abs(
+                this.getCurrentCoor.y - this.getLastMouseForRelative.y
+              ) ||
+            (this.mode == "4" &&
+              (this.position == "top" || this.position == "bottom"))
           ) {
             direction = "top";
             if (this.getCurrentCoor.y > this.getLastMouseForRelative.y) {
               direction = "bottom";
             }
-          }*/
+          }
           if (direction == this.position) {
             //highlight me. i have been chosen
             this.setHighlighted(arrIndex);

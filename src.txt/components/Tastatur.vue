@@ -2,8 +2,7 @@
   <div @click="handleClick">
     {{ getCurrentCoor }} <br />
     <!-- Eigenschaft die sich ändert um vue upzudaten -->
-
-    <div :class="keyboardClass" ref="parent" style="margin-top:300px;"></div>
+    <div :class="keyboardClass" ref="parent"></div>
     <HalfFavourite
       :fav-index="determineFirstHalf()"
       :x1="xMin"
@@ -62,12 +61,7 @@ export default {
     ]),
     //array mit a b c,...
     arrButton: function() {
-      if(this.keySchalter){
-            return this.buttons1.split(" ");
-      } else{
-            return this.buttons2.split(" ");
-      }
-
+      return this.buttons.split(" ");
     },
   },
 
@@ -80,31 +74,20 @@ export default {
     //selectionRunning: 0,
     selected: [], //die Tatsten die in Frage kommen, am Anfang 64
     isAppOn: false,
-    clicksGazer: 0,
-    selq: "input1",
     mode: 1, // 1 absolute 2 relative 3 arrows
     arrow: "",
-    storeInput: {},
-    keySchalter: true,
-    buttons1:
-      "a b c d e f g h 1 2 3 4 5 6 7 8 i j k l m n o p 9 0 + - / * = % q r s t u v w x , ; . ? ! tab ( ) y z {shift} {space} @ _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF home {bksp}",
-    buttons2:
-      "A B C D E F G H 1 2 3 4 5 6 7 8 I J K L M N O P 9 0 + - / * = % Q R S T U V W X , ; . ? ! \u00A7 ( ) Y Z {shift} {space} @ _ : {enter} [ ] \u00C4 \u00D6 \u00DC \u00DF {shift2} {bksp}",
-   
+    buttons:
+      "a b c d e f g h 1 2 3 4 5 6 7 8 i j k l m n o p 9 0 + - / * = % q r s t u v w x , ; . ? ! \u00A7 ( ) y z {shift} {space} @ _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF {shift2} {bksp}",
   }),
   mounted() {
-    
     //console.log(this.arrButton);
     if (localStorage.getItem("mode")) {
       this.mode = parseInt(localStorage.getItem("mode"));
     } else {
       this.mode = 1;
     }
-    if(this.mode == 4){
-      window.addEventListener("click", this.adjustGazerClick);
-    }
     window.addEventListener("keyup", this.onKeyup);
-    //////////////////////////////////////////////   \u00A7
+    //////////////////////////////////////////////
     this.keyboard = new Keyboard({
       onChange: this.onChange,
       //onKeyPress: this.onKeyPress,
@@ -113,8 +96,8 @@ export default {
         default: [
           "a b c d e f g h 1 2 3 4 5 6 7 8",
           "i j k l m n o p 9 0 + - / * = %",
-          "q r s t u v w x , ; . ? ! tab ( )",
-          "y z {shift} {space} @ _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF home {bksp}",
+          "q r s t u v w x , ; . ? ! \u00A7 ( )",
+          "y z {shift} {space} @ _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF {shift2} {bksp}",
         ],
         shift: [
           "A B C D E F G H 1 2 3 4 5 6 7 8",
@@ -127,7 +110,7 @@ export default {
         {
           class: "sameSize",
           buttons:
-            "a b c d e f g h A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 i j k l m n o p 9 0 + - / * = % q r s t u v w x , ; . ? ! @ ( ) y z {shift} {space} U+0040 _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF \u00C4 \u00D6 \u00DC \u00A7 {shift2} {bksp} tab home",
+            "a b c d e f g h A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 i j k l m n o p 9 0 + - / * = % q r s t u v w x , ; . ? ! @ ( ) y z {shift} {space} U+0040 _ : {enter} [ ] \u00E4 \u00F6 \u00FC \u00DF \u00C4 \u00D6 \u00DC \u00A7 {shift2} {bksp}",
         },
         {
           class: "atButton",
@@ -135,31 +118,9 @@ export default {
         },
       ],
     });
-    //Gell all Text fields
-    const arrAllInput = document.querySelectorAll('input');    
-    //add genuine class to enabled text fields
-    for(let i=0; i< arrAllInput.length;i++){
-      if(arrAllInput[i].type == "text" && !arrAllInput[i].disabled && window.getComputedStyle(arrAllInput[i]).display != 'none'){
-          arrAllInput[i].classList.add("keyboard-input-vue-" + i);
-          arrAllInput[i].addEventListener('focus', () => {
-            //event.target.style.background = 'pink';
-             //this.keyboard.options.inputName = "keyboard-input-vue-" + i;
-             this.selq =  "keyboard-input-vue-" + i;
-          });
-      }
-    }
-    if(arrAllInput.length > 0){
-       arrAllInput[0].focus();
-    }
   },
   methods: {
     ...mapMutations(["setSelected", "setArrowDirection"]),
-    adjustGazerClick(){
-      this.clicksGazer++ ;
-      if( this.clicksGazer >= 5){
-        this.isAppOn = true;
-      }
-    },
     //64,32,16
     determineFirstHalf() {
       let result = [];
@@ -221,7 +182,7 @@ export default {
         return arrPosition[index];
       }
       //alterniert zwischen links,rechts und obern,unten
-      if (this.mode == 2 || this.mode == 3 || this.mode == 4) {
+      if (this.mode == 2 || this.mode == 3) {
         let selected = this.getSelected;
         if (selected.length == 32 || selected.length == 8) {
           arrPosition = ["top", "bottom"];
@@ -249,21 +210,10 @@ export default {
       if (this.mode == 3) {
         this.xMin = 6; // any random value to refreh the child component. xMin does not play any role in mode 3, damit vue das Bild neuzeichnet
       }
-      if (this.mode == 4) {
-        let snapShotHighlightedSituation = this.getHighlighted;
-        setTimeout(() => {
-          if(snapShotHighlightedSituation == this.getHighlighted){
-            this.handleClick();
-          }
-        }, 2500);      }
+
       //console.log(this.selected);
     },
     handleClick: function() {
-      let key = this.selq;
-      let val = "";
-      if(typeof this.storeInput[key] != "undefined"){
-        val = this.storeInput[key];
-      }
       if (this.selected.length > 1) {
         this.selected = this.getHighlighted;
         this.setSelected(this.selected);
@@ -271,19 +221,16 @@ export default {
           this.handleClick();
         }
       } else if (this.selected.length == 1) {
-        let taste = this.arrButton[this.selected[0]];
+        //if(this.mode == 3 || this.mode == 2){
         this.onKeyPress(this.arrButton[this.selected[0]]);
+        //}
+        //console.log("click");
         this.selected = [];
         this.setSelected(this.selected);
-        if(this.mode == 4){ //onChange is not called
-          console.log("jj");
-          this.onChange(val+taste);
-        }
       }
     },
     onKeyup(e) {
-    //9 13
-      console.log(e);
+      //console.log(e);
       if (this.mode == 3) {
         e = e || window.event;
         if (e.keyCode == "13") {
@@ -318,35 +265,11 @@ export default {
       return s;
     },
     onChange(input) {
-      let key = this.selq;
-      let val = "";
-      if(typeof this.storeInput[key] != "undefined"){
-        val = this.storeInput[key];
-      }
-      if(this.selected.length > 2){
-        this.keyboard.setInput(val);
-      } else {
-         if(input.replace(val, "") == "tab"){
-          let index = Number(key.replace("keyboard-input-vue-", "")) +1;
-          const next = document.querySelector(".keyboard-input-vue-" +index);
-          if (next) {
-              next.focus();
-          }else{
-              document.querySelector(".keyboard-input-vue-0").focus();
-          }
-           return;
-         }
-          if(input.replace(val, "") == "home"){
-            window.open("https://www.google.com/", '_blank');
-           location.reload(); 
-         }
-         this.storeInput[key] = input;
-        document.querySelector("." + this.selq).value = input;
-      }
-      this.$emit("onChange", val);
+      this.$emit("onChange", input);
     },
     onKeyPress(button) {
-      //console.log(button);
+      console.log(button);
+
       this.$emit("onKeyPress", button);
       /**
        * If you want to handle the shift and caps lock buttons
@@ -356,7 +279,6 @@ export default {
     },
     handleShift() {
       console.log("Shift");
-      this.keySchalter = !this.keySchalter;
       let currentLayout = this.keyboard.options.layoutName;
       let shiftToggle = currentLayout === "default" ? "shift" : "default";
       this.keyboard.setOptions({
@@ -411,5 +333,39 @@ export default {
 .highlighted {
   background-color: coral !important;
 }
+/* let keyboard = new Keyboard({
+  onChange: input => onChange(input),
+  onKeyPress: button => onKeyPress(button),
+  theme: "hg-theme-default hg-layout-default myTheme",
+  layout: {
+    default: [
+      "` 1 2 3 4 5 6 7 8 9 0 - = {bksp}",
+      "{tab} q w e r t y u i o p [ ] \\",
+      "{lock} a s d f g h j k l ; ' {enter}",
+      "{shift} z x c v b n m , . / {shift2}",
+      ".com @ {space}"
+    ],
+    shift: [
+      "~ ! @ # $ % ^ & * ( ) _ + {bksp}",
+      "{tab} Q W E R T Y U I O P { } |",
+      '{lock} A S D F G H J K L : " {enter}',
+      "{shift} Z X C V B N M < > ? {shift2}",
+      ".com @ {space}"
+    ]
+  },
+  buttonTheme: [
+    {
+      class: "hg-red",
+      buttons: "Q W E R T Y q w e r t y"
+    },
+    {
+      class: "hg-highlight",
+      buttons: "Q q"
+    }
+  ]
+});
 
+https://hodgef.com/simple-keyboard/editor/?d=hodgef/simple-keyboard-npm-demos/tree/uc-customization
+
+ */
 </style>
